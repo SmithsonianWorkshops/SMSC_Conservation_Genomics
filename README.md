@@ -1,5 +1,6 @@
-[![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/) 
-[![Slack Status](https://img.shields.io/badge/Slack_Channel-dc--genomics-E01563.svg)](https://swcarpentry.slack.com/messages/C9N1K7DCY) 
+Source materials for [https://smithsonianworkshops.github.io/SMSC_Conservation_Genomics/](https://smithsonianworkshops.github.io/SMSC_Conservation_Genomics/)
+
+This website is a fork of the [Data Carpentry Genomics Workshop](http://www.datacarpentry.org/genomics-workshop/), previously adapted for the Smithsonian HPC in June 2018 here: [https://smithsonianworkshops.github.io/2018-06-12-nmnh/lessons_index.html](https://smithsonianworkshops.github.io/2018-06-12-nmnh/lessons_index.html). 
 
 # Shell Genomics lessons
 

@@ -12,17 +12,7 @@ keypoints:
 
 ## SI Computing Cluster: Hydra
 
-## Cluster Architecture
-
-## Queing System/Job Scheduler
-
-https://hydra-4.si.edu/tools/QSubGen/
-
-### CPU Time
-
-### Parallelization
-
-### Memory
+PDF presentation about Hydra: 
 
 ## Modules
 

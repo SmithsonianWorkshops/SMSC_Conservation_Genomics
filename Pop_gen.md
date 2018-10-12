@@ -14,7 +14,7 @@
 	+ Don't copy it to your space.
 	+ Create job files to map each individual's reads to your scaffold.
 	+ **module**: ```bioinformatics/bowtie2```
-	+ Here is an example **command** (this will need editing to make it work for your data): ```bowtie2 --very-sensitive -N 1  -I 100 -X 600 -x siskin -p $NSLOTS --phred33 --rg-id "MB-12866" --rg SM:"MB-12866" --rg PL:"ILLUMINA" --rg LB:"hiseq.phred33" -1 /data/genomics/dikowr/SMSC/resequence_data/MB-12866_GTTTCG_R1_all.fq.gz -2 /data/genomics/dikowr/SMSC/resequence_data/MB-12866_GTTTCG_R2_all.fq.gz -S siskin_MB-12866.sam 2> siskin_MB-12866.stat```
+	+ Here is an example **command** (this will need editing to make it work for your data): ```bowtie2 --very-sensitive -N 1  -I 100 -X 600 -x siskin -p $NSLOTS --phred33 --rg-id "MB-12866" --rg SM:"MB-12866" --rg PL:"ILLUMINA" --rg LB:"hiseq.phred33" -1 /data/genomics/dikowr/SMSC/resequence_data/MB-12866_GTTTCG_R1_all.fq -2 /data/genomics/dikowr/SMSC/resequence_data/MB-12866_GTTTCG_R2_all.fq -S siskin_MB-12866.sam 2> siskin_MB-12866.stat```
 	+ Check out the output file using ```head```
 
 ###2. Manipulating the Bowtie2 output 

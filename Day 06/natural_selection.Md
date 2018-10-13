@@ -1,17 +1,18 @@
-#COMMANDS FOR ConGen Course
-qrsh
-module load bioinformatics/vcftools/0.1.14
-vcftools --vcf gVCF --SNPdensity 100000 # Can play with this window size in course to show differences
-module load tools/R/3.4.1
-R
+# 1. Analyze SNP density along chromosome assemblies using sliding window analysis in VCFtools  
+Modules: `bioinformatics/vcftools/0.1.14`  
+Command: `vcftools --vcf <INPUT_VCF> --SNPdensity <WINDOW_SIZE>`  
+## What happens when window size is changed?  
 
-#In R
-library(ggplot2)
-siskin <- read.table("out.snpden", header = TRUE)
-pdf("siskin_density.pdf")
-qplot(siskin$BIN_START, siskin$VARIANTS.KB, data=siskin, geom= "point", colour=siskin$CHROM,main = "Siskin SNP Density", ylab="Density",xlab="ChromPosition") + labs(colour="Chromosome")
-dev.off()
-q()
+# 2. Plot distribution using ggplot2  
+## Write R script
+`library(ggplot2)`  
+`library(ggplot2)`  
+`siskin <- read.table("out.snpden", header = TRUE)`  
+`pdf("siskin_density.pdf")`  
+`qplot(siskin$BIN_START, siskin$VARIANTS.KB, data=siskin, geom= "point", colour=siskin$CHROM,main = "Siskin SNP Density", ylab="Density",xlab="ChromPosition") + labs(colour="Chromosome")`  
+`dev.off()`  
+Modules: `tools/R/3.4.1`  
+Command: `Rscript <script_name.R>`  
 
 # Download siskin_density.pdf using sftp/scp/etc
 

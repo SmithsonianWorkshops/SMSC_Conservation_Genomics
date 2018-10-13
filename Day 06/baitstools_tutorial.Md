@@ -46,7 +46,7 @@ Command: `ruby baitstools.rb annot2baits -i <INPUT.gff> -r <Input.fa> -U <DESIRE
 
 annot2baits will give the standard output and a FASTA file of the extracted regions (in this case "out-regions.fa").  
 
-## 4. vcf2baits and baits from genomic variants  
+# 4. vcf2baits and baits from genomic variants  
 vcf2baits selects variants from a vcf file and then generates baits from a reference sequence.  
 
 ## Specify the input VCF using `-i` and the reference sequence with `-r`.  

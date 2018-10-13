@@ -16,12 +16,11 @@
 	+ **module**: ```bioinformatics/bcftools```
 	+ **command**: ```bcftools call -c -O v YOUR_FILE.bcf > OUTPUT.vcf ```
 ```vcfutils.pl vcf2fq -d <mindepth> -D <maxdepth> <YOUR_FILE.vcf> > OUTPUT_consensus.fq```
-```gzip <outconcensus>.fq.gz```
 
 * Finally, we will run PSMC
 	+ **module**: ```module load bioinformatics/psmc```
 	+ **module**: ```module load gnuplot```
-	+ **command**: ```fq2psmcfa -q20 <outconcensus>.fq.gz > <outconsensus>.psmcfa```
+	+ **command**: ```fq2psmcfa -q20 <outconcensus>.fq > <outconsensus>.psmcfa```
 ```psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o output.psmc input.psmcfa```
 ```parallel -j$NSLOTS "psmc -N25 -t15 -r5 -b -p "4+25*2+4+6" input.psmcfa -o round-{}.psmc" :::: <(seq 100)```
 ```psmc_plot.pl <output_prefix> input.psmc```

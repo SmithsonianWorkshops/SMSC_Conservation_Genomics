@@ -34,6 +34,5 @@ Command: `vcftools --vcf <INDIVIDUAl>.recode.vcf --recode --out <INDIVIDUAL>_het
 
 ## Get heterozygous densities  
 Command: `vcftools --vcf <INDIVIDUAL>_hetsites.recode.vcf --SNPdensity 100000 --out <INDIVIDUAL>_hetsites`  
-R
 
 ## Make R script and visualize density plot  

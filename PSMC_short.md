@@ -1,8 +1,8 @@
 ###1. PSMC
 * Reminder to take notes, share info here: [Etherpad](https://pad.carpentries.org/CuuMC5spi7)
 * For this part of the tutorial, we're going to work with a sorted bam file, from which we already removed the duplicates
-* BAM file:  ```/scratch/genomics/tsuchiyam/varcall_psmc/siskin_all_nodup.bam```
-* Here is the reference: ```/scratch/genomics/dikowr/siskin_SMSC/siskin_Contig3141_pilon.fasta```
+	+ BAM file:  ```/scratch/genomics/tsuchiyam/varcall_psmc/siskin_all_nodup.bam```
+	+ Here is the reference: ```/scratch/genomics/dikowr/siskin_SMSC/siskin_Contig3141_pilon.fasta```
 
 *  First we will get stats and average coverage from our file:
 	+ **module**: ```bioinformatics/samtools/1.6```

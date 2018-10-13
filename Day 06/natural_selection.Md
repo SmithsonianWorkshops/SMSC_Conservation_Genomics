@@ -18,16 +18,22 @@ Command: `Rscript <script_name.R>`
 
 ## Download siskin_density.pdf using sftp/scp/etc  
 
-vcftools --vcf gVCF --LROH --chr <CHROMOSOME NAME> # Show LROHs per individual
-vcftools --vcf gVCF --recode --out <INDIVIDUAL> --indv <INDIVIDUAL> # Make individual VCF
-vcftools --vcf <INDIVIDUAl>.recode.vcf --recode --out <INDIVIDUAL>_hetsites --max-maf 0.9 --maf 0.1 # Get Heterozygous sites
-vcftools --vcf <INDIVIDUAL>_hetsites.recode.vcf --SNPdensity 100000 --out <INDIVIDUAL>_hetsites
+## Do you observe any regions of low/high SNP density?  
+
+# 3. Identify individual-specific ROH using VCFtools  
+Command: `vcftools --vcf gVCF --LROH --chr <CHROMOSOME NAME> # Show LROHs per individual`
+
+## Are any ROH identified in any individual? How long?  
+
+# 4. Calculate and plot individual zygosity  
+## Make individual VCF  
+
+Command: `vcftools --vcf gVCF --recode --out <INDIVIDUAL> --indv <INDIVIDUAL>`  
+## Get Heterozygous sites 
+Command: `vcftools --vcf <INDIVIDUAl>.recode.vcf --recode --out <INDIVIDUAL>_hetsites --max-maf 0.9 --maf 0.1`  
+
+## Get heterozygous densities  
+Command: `vcftools --vcf <INDIVIDUAL>_hetsites.recode.vcf --SNPdensity 100000 --out <INDIVIDUAL>_hetsites`  
 R
 
-#In R
-library(ggplot2)
-siskin <- read.table("<INDIVIDUAL>_hetsites.snpden", header = TRUE)
-pdf("<INDIVIDUAL>_heterozygosity.pdf")
-qplot(siskin$BIN_START, siskin$VARIANTS.KB, data=siskin, geom= "point", colour=siskin$CHROM,main = "Siskin Heterozygosity", ylab="Heterozygosity",xlab="ChromPosition") + labs(colour="Chromosome")
-dev.off()
-q()
+## Make R script and visualize density plot  

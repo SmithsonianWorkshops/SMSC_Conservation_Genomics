@@ -1,4 +1,4 @@
-# 1. Obtain BaitsTools from Github and check the help
+# 1. Obtain BaitsTools from GitHub and check the help
 ## Obtain BaitsTools and make executable  
 Command: `git clone https://github.com/campanam/BaitsTools`  
 Command: `chmod +x BaitsTools/*.rb`  

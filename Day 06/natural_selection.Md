@@ -25,7 +25,7 @@ Command: `vcftools --vcf gVCF --LROH --chr <CHROMOSOME NAME> # Show LROHs per in
 
 ## Are any ROH identified in any individual? How long?  
 
-# 4. Calculate and plot individual zygosity  
+# 4. Calculate and plot individual heterozygosity  
 ## Make individual VCF  
 
 Command: `vcftools --vcf gVCF --recode --out <INDIVIDUAL> --indv <INDIVIDUAL>`  

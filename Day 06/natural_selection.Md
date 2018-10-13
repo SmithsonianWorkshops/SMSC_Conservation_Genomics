@@ -11,10 +11,12 @@ Command: `vcftools --vcf <INPUT_VCF> --SNPdensity <WINDOW_SIZE>`
 `pdf("siskin_density.pdf")`  
 `qplot(siskin$BIN_START, siskin$VARIANTS.KB, data=siskin, geom= "point", colour=siskin$CHROM,main = "Siskin SNP Density", ylab="Density",xlab="ChromPosition") + labs(colour="Chromosome")`  
 `dev.off()`  
+
+## Execute R script in job file  
 Modules: `tools/R/3.4.1`  
 Command: `Rscript <script_name.R>`  
 
-# Download siskin_density.pdf using sftp/scp/etc
+## Download siskin_density.pdf using sftp/scp/etc  
 
 vcftools --vcf gVCF --LROH --chr <CHROMOSOME NAME> # Show LROHs per individual
 vcftools --vcf gVCF --recode --out <INDIVIDUAL> --indv <INDIVIDUAL> # Make individual VCF

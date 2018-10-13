@@ -10,17 +10,18 @@ Command: `ruby baitstools.rb`
 Command: `ruby baitstools.rb <subcommand> -h`  
 
 # 2. tilebaits and basic sequence filtration  
-tilebaits generates baits from a list of DNA sequences in FASTA or FASTQ format. We will generate 120 bp baits with 60 bp tiling to produce a 2× coverage of the input sequences.  
+## Generate 120 bp baits with 60 bp tiling to produce a 2× coverage of the input FASTA/FASTQ sequences.  
 Command: `ruby baitstools.rb tilebaits -i <INPUT.fa> -L 120 -O 60 -B`  
 
 BaitsTools will generate a fasta file "out-baits.fa" that contains the unfiltered candidate bait sequences and a BED file "out-baits.bed" listing the bait sequence coordinates.  
 
-## Use the `-c` argument to remove candidate baits shorter than the requested bait length. Gaps and Ns can be removed using `-G exclude` and `-N` respectively. Use the `-w` command to output a TSV format table of parameters. Enter the following command:  
+## Use the `-c` argument to remove candidate baits shorter than the requested bait length. Remove gaps and Ns with `-G exclude` and `-N` respectively. Use the `-w` command to output a TSV format table of parameters.  
 Command: `ruby baitstools.rb tilebaits -i <INPUT.fa> -L 120 -O 60 -B -w -c -G exclude -N`  
 
 baitstools will generate a fasta file out-filtered-baits.fa" and a "out-filtered-baits.bed" containing the filtered bait sequences and coordinates respectively. It will also output a TSV-format file "out-filtered-params.txt" containing the results of bait filtration.  
 
-## Open the out-filtered-params.txt in a spreadsheet program or text editor. The columns from left to right are:  
+## Open the out-filtered-params.txt in a spreadsheet program or text editor.  
+The columns from left to right are:  
 * Chromosome (Haplotype): Coordinates: The reference sequence, the haplotype identification (for alternate alleles or alignment data), and the bait coordinates.  
 * BaitLength: The length of the generated bait  
 * GC%: Bait GC content in percent  
@@ -32,12 +33,13 @@ baitstools will generate a fasta file out-filtered-baits.fa" and a "out-filtered
 * Gaps: Whether the bait included gaps  
 * Kept: Whether the bait was retained in the final filtered set. 
 
-## Filter the previously-made baits by target GC content and melting temperature. To use a default value, simply use the argument flag without a specified value. We will use the default minimum (`-n`) and maximum (`-x`) GC contents of 30% and 50% respectively. We will change the minimum (`-q`) and maximum (`-z`) melting temperatures to 80°C and 140°C. Since we will change these from the defaults, the melting temperature values need to be specified after the corresponding argument flags. Enter the following command:  
+## Filter the previously-made baits by target GC content and melting temperature.  
+To use a default value, simply use the argument flag without a specified value. Use the default minimum (`-n`) and maximum (`-x`) GC contents of 30% and 50% respectively. Change the minimum (`-q`) and maximum (`-z`) melting temperatures to 80°C and 140°C.   
 Command: `ruby baitstools.rb checkbaits -i out-filtered-baits.fa -w -n -x -q 80 -z 140`  
 
 ## Inspect the parameters file to see which baits were retained after filtration.  
 
-# 3. annot2baits and baiting of specific genomic features
+# 3. annot2baits and baiting of specific genomic features  
 annot2baits generates baits from a GFF/GTF annotation file and the corresponding regions in a FASTA or FASTQ file.  
 
 Command: `ruby baitstools.rb annot2baits -i <INPUT.gff> -r <Input.fa> -U <DESIRED_FEATURES> -B`  
@@ -47,12 +49,13 @@ annot2baits will give the standard output and a FASTA file of the extracted regi
 ## 4. vcf2baits and baits from genomic variants  
 vcf2baits selects variants from a vcf file and then generates baits from a reference sequence.  
 
-## Specify the input VCF using `-i` and the reference sequence with `-r`. In addition to the common output and quality-control options, vcf2baits can filter VCF variants by their QUAL score (specified using `-V`) to help prevent the inclusion of sequencing errors in the bait set. The total number of desired variants is controlled with `-t` across all sequences in the reference file. The maximum number of variants per contig or scaffold is controlled with `-m`. The minimum distance distance between variants is controlled with `-d`. First, we will generate baits for 40 variants with QUAL score >= 30 and a minimum distance of 20,000 bp apart. Note that both `-t` and `-m` are set to 40 here since there is only one reference sequence in the file.   
+## Specify the input VCF using `-i` and the reference sequence with `-r`.  
+In addition to the common output and quality-control options, vcf2baits can filter VCF variants by their QUAL score (specified using `-V`) to help prevent the inclusion of sequencing errors in the bait set. The total number of desired variants is controlled with `-t` across all sequences in the reference file. The maximum number of variants per contig or scaffold is controlled with `-m`. The minimum distance distance between variants is controlled with `-d`. First, we will generate baits for 40 variants with QUAL score >= 30 and a minimum distance of 20,000 bp apart. Note that both `-t` and `-m` are set to 40 here since there is only one reference sequence in the file.   
 Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 -m 40 -d 20000 -D`
 
 This will produce a set of 120 bp baits with the selected variants at the 61st base position in each bait.  
 
-## Bait length is controlled with `-L`. To change the position of the variant within the bait, use `-b` to specify the number of bases before the variant within the bait. For example, to change the previous settings to 80 bp baits with the variants at the 21st base postion, enter the following command:  
+## Bait length is controlled with `-L`. Use `-b` to specify the number of bases before the variant within the bait.    
 Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 -m 40 -d 20000 -L 80 -b 20 -D`  
 
 ## Baits can be tiled across the selected variants. Use the `-O` argument to specify the base pair offset between tiled baits and the `-k` argument to specify the number of baits per variant. Use the `-b` argument to determine the starting position for tiling. Ggenerate 80 bp baits from with 3× variant coverage and a 15 bp offset between baits and a starting postion 79 bp upstream of the variant, enter the following command:  

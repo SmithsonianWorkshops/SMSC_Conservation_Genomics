@@ -36,3 +36,12 @@ Command: `vcftools --vcf <INDIVIDUAl>.recode.vcf --recode --out <INDIVIDUAL>_het
 Command: `vcftools --vcf <INDIVIDUAL>_hetsites.recode.vcf --SNPdensity <WINDOW_SIZE> --out <INDIVIDUAL>_hetsites`  
 
 ## Make R script and visualize density plot  
+
+# 4. Identify individual-specific ROH using BCFtools  
+Modules: `bioinformatics/bcftools/1.4.1`  
+Command: `bcftools roh  -s <SAMPLE> -O r <INPUT_VCF.gz> > ROH.txt`  
+
+BCFtools ROH requires a gzipped compressed VCF file.  Use `gzip` to compress your VCF.  
+
+## Are the ROH identified the same as with VCFtools?  
+

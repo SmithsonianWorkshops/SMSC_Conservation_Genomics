@@ -45,3 +45,16 @@ BCFtools ROH requires a gzipped compressed VCF file.  Use `gzip` to compress you
 
 ## Are the ROH identified the same as with VCFtools?  
 
+# 5. Predict variant effects using SnpEff  
+
+# Change default data directory in SnpEff.config file to /home/<YOURNAME>  
+
+# Add siskin.genome to SnpEff.config file in the list of genomes.  
+
+# Build siskin genome  
+Modules: `java/1.8.0_45`  
+Command: `mkdir genomes`  
+Command: `mkdir siskin`  
+Command: `mv <REFERENCE.fa> genomes/siskin.fa`  
+Command: `mv <REFERENCE.gff> siskin/genes.gff`  
+Command: `java -jar snpEff.jar build -gff3 -v siskin`  

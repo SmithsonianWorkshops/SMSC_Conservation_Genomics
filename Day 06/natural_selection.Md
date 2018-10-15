@@ -58,3 +58,20 @@ Command: `mkdir siskin`
 Command: `mv <REFERENCE.fa> genomes/siskin.fa`  
 Command: `mv <REFERENCE.gff> siskin/genes.gff`  
 Command: `java -jar snpEff.jar build -gff3 -v siskin`  
+
+# Compute variant effects using SnpEff  
+Command: `java -jar snpEFF.jar siskin <INPUT_VCF> > <OUT.vcf>`  
+
+# Download snpEff_summary.html and inspect output  
+
+# 6. Extract putatively selected genes from your VCF using SnpSift  
+Modules: `java/1.8.0_45`  
+Command: `java -jar SnpSift.jar filter "ANN[*].EFFECT has <missense_variant/stop_gained/etc>" <OUT.vcf> > <filtered.vcf>`  
+
+SnpSift filter uses || and && for OR and AND respectively, allowing more stringent filtering.  
+e.g. to get both missense and stop-gained sites, the filter line is: `"ANN[*].EFFECT has 'missense_variant' || ANN[*].EFFECT has 'stop_gained'"`  
+
+# Compile list of possibly selected genes  
+Command: `java -jar SnpSift.jar extractFields "ANN[*].GENE" <filtered.vcf> > genes.txt`  
+
+This list will be non-unique, but can be manipulated in Excel or other tools to get a final gene list.  

@@ -4,8 +4,9 @@ Command: `vcftools --vcf <INPUT_VCF> --SNPdensity <WINDOW_SIZE>`
 ## What happens when window size is changed?  
 
 # 2. Plot distribution using ggplot2  
+Modules: `tools/R/3.4.1`  
+
 ## Write R script
-`library(ggplot2)`  
 `library(ggplot2)`  
 `siskin <- read.table("out.snpden", header = TRUE)`  
 `pdf("siskin_density.pdf")`  
@@ -60,7 +61,7 @@ Command: `mv <REFERENCE.gff> siskin/genes.gff`
 Command: `java -jar snpEff.jar build -gff3 -v siskin`  
 
 # Compute variant effects using SnpEff  
-Command: `java -jar snpEFF.jar siskin <INPUT_VCF> > <OUT.vcf>`  
+Command: `java -jar snpEff.jar siskin <INPUT_VCF> > <OUT.vcf>`  
 
 # Download snpEff_summary.html and inspect output  
 

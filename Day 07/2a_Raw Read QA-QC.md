@@ -3,12 +3,12 @@
 
 #### Get the data
 
-Download the reads that we will be using for this workshop found in ```/pool/genomics/workshops/RNAseq```. Make a new subdirectory in your ```/pool/genomics``` directory and copy the reads there.
+Download the reads that we will be using for this workshop found in ```/data/genomics/workshops/RNAseq/```. Make a new subdirectory in your ```/pool/genomics``` directory and copy the reads there.
 
 ```
 $ cd /pool/genomics/<username>
-$ mkdir RNAseq_workshop
-$ cd RNAseq_workshop
+$ mkdir RNAseq_SMSC
+$ cd RNAseq_SMSC
 $ cp /data/genomics/workshops/RNAseq/data.tar.gz .
 ```
 

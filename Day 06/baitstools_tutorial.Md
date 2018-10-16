@@ -57,7 +57,7 @@ Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 
 This will produce a set of 120 bp baits with the selected variants at the 61st base position in each bait.  
 
 ## Bait length is controlled with `-L`. Use `-b` to specify the number of bases before the variant within the bait.    
-Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 -m 40 -d 20000 -L 80 -b 20 -D`  
+Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 -m 40 -d 20000 -L 80 -b 20`  
 
 ## Baits can be tiled across the selected variants. Use the `-O` argument to specify the base pair offset between tiled baits and the `-k` argument to specify the number of baits per variant. Use the `-b` argument to determine the starting position for tiling. Ggenerate 80 bp baits from with 3× variant coverage and a 15 bp offset between baits and a starting postion 79 bp upstream of the variant, enter the following command:  
 Command: `ruby baitstools.rb vcf2baits -i <INPUT.vcf> -r <INPUT.fa> -V 30 -t 40 -m 40 -d 20000 -L 80 -b 79 -O 15 -k 3 -D`  

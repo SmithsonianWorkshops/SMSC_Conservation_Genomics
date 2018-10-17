@@ -41,7 +41,7 @@ FastQC is a program that can quickly scan your raw data to help figure out if th
     + **memory:** 2GB
     + **PE:** serial
     + **module:** ```bioinformatics/fastqc/0.11.5```
-    + **command:** ```fastqc <FILE.fastq>```  
+    + **command:** ```fastqc data/<FILE.fastq>```  
     + **job name:** FASTQC *(or name of your choice)*  
     + **log file name:** FASTQC.log  
     + hint: either use ```nano``` or upload your job file using ```scp``` from your local machine into the `assembly_tutorial` directory. See [here](https://confluence.si.edu/display/HPC/Disk+Space+and+Disk+Usage) and [here](https://confluence.si.edu/display/HPC/Transferring+files+to+or+from+Hydra) on the Hydra wiki for more info.  
@@ -54,7 +54,7 @@ TrimGalore will auto-detect what adapters are present and remove very low qualit
 _Note: We will not be doing this step for this particular workshop because the data has already been trimmed. However, remember that trimming adapters should always be done prior to genome/transcriptome assembly!_
 
 * Create a job file to run TrimGalore on your data:  
-	+ **command**: ```trim_galore --paired --retain_unpaired <FILE_1.fastq> <FILE_2.fastq>```  
+	+ **command**: ```trim_galore --paired --retain_unpaired data/<FILE_1.fastq> data/<FILE_2.fastq>```  
 	+ **module**: ```bioinformatics/trimgalore/0.4.0```
 	+ You can then run FastQC again to see if anything has changed.
 

@@ -3,19 +3,19 @@
 
 #### Get the data
 
-Download the reads that we will be using for this workshop found in ```/data/genomics/workshops/RNAseq/```. Make a new subdirectory in your ```/pool/genomics``` directory and copy the reads there.
+Download the reads that we will be using for this workshop found in ```/data/genomics/workshops/smsc/RNA_Seq/```. Make a new subdirectory in your ```/pool/genomics``` directory and copy the reads there.
 
 ```
 $ cd /pool/genomics/<username>
 $ mkdir RNAseq_SMSC
 $ cd RNAseq_SMSC
-$ cp /data/genomics/workshops/RNAseq/data.tar.gz .
+$ cp /data/genomics/workshops/smsc/RNA_Seq/SMSC_data.tar.gz .
 ```
 
 Now unpack/unzip the tar file:
 
 ```
-$ tar -xvzf data.tar.gz
+$ tar -xvzf SMSC_data.tar.gz
 ```
 
 Go ahead and take a look at the data in your directory:
@@ -24,18 +24,18 @@ Go ahead and take a look at the data in your directory:
 ls -lh data
 ```
 
-The paper from which these data are derived examined *C. glabrata* in two conditions, nutrient rich (wt) and under nitrosative stress (GNSO). Note that for each replicate, there are two files, ending in: 1.fastq and 2.fastq. This is because the reads are paired end.
+Most of the data used in this tutorial is data generated as part of the [Red Siskin Genome Project](https://www.braunlab.umd.edu/red-siskin-conservation/). Note that for each replicate (Brain, Embryo, Eye & Femur), there are two files, ending in: \_1.fastq and \_2.fastq. This is because the reads are paired end.
 
-In this tutorial we are assuming that there is no good reference genome. Because of this, we need to generate a reference transcriptome that includes all of the data that you wish to analyze, so our _de novo_ transcriptome assembly will include the reads from all of the replicates.
+In this tutorial we are assuming that there is no good reference genome (even though one exists). Because of this, we need to generate a reference transcriptome that includes all of the data that you wish to analyze, so our _de novo_ transcriptome assembly will include the reads from all of the replicates.
 
 However, before we start the Trinity run, we will do some quality assessment with FASTQC.
 
 ####Read quality assessment with FASTQC
 
-FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the three files you downloaded.
+FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the eight raw read files you downloaded (eg. data/RNA\_Brain\_1.fastq.gz).
 
 * Create a job file to run FASTQC on the data you just copied to your working directory:  
-	+ Use the QSub Generator: ```https://hydra-4.si.edu/tools/QSubGen```
+	+ Use the [QSub Generator](https://hydra-4.si.edu/tools/QSubGen)
     + *Remember Chrome works best, but you'll need to accept the security warning message*  
     + **CPU time:** short *(we will be using short for all job files in this tutorial)*
     + **memory:** 2GB
@@ -57,3 +57,4 @@ _Note: We will not be doing this step for this particular workshop because the d
 	+ **command**: ```trim_galore --paired --retain_unpaired <FILE_1.fastq> <FILE_2.fastq>```  
 	+ **module**: ```bioinformatics/trimgalore/0.4.0```
 	+ You can then run FastQC again to see if anything has changed.
+

@@ -5,7 +5,7 @@ _Note: First we need to install one more ```R``` package. To do so follow these 
 Once you are logged in to hydra:
 
 ```
-$ module load tools/R/3.2.1
+$ module load bioinformatics/trinity/2.6.6
 $ R
 ```
 
@@ -15,9 +15,18 @@ Now that you are in ```R```, you need to load the biocLite function again:
 > source("http://bioconductor.org/biocLite.R")
 > biocLite()
 > biocLite('qvalue')
+> biocLite('fastcluster')
 ```
 
-You will be prompted to update your other libraries. Respond with ```n```.
+For both the last two commands, you will be prompted to update your other libraries. Respond with ```n```.
+
+Then exit
+
+```
+> quit()
+```
+
+When promted to "Save workspace image? [y/n/c]:" reply `n`. 
 
 ####Create sample text file
 
@@ -30,12 +39,12 @@ $ nano samples.txt
 Enter the following (keep in mind that the condition and names should be separated by tabs!).
 
 ```
-GSNO	GSNO_SRR1582648
-GSNO	GSNO_SRR1582647
-GSNO	GSNO_SRR1582646
-WT	wt_SRR1582651
-WT	wt_SRR1582649
-WT	wt_SRR1582650
+GSNO	GSNO_SRR1582648.RSEM
+GSNO	GSNO_SRR1582647.RSEM
+GSNO	GSNO_SRR1582646.RSEM
+WT	wt_SRR1582651.RSEM
+WT	wt_SRR1582649.RSEM
+WT	wt_SRR1582650.RSEM
 ```
 
 Since software can be very picky about whether you specified config files correctly, it is sometimes good to check that you did, indeed, enter the correct characters. You can view special characters with:
@@ -47,12 +56,12 @@ $ cat -te samples.txt
 If your file was specified correctly, it should look like this:
 
 ```
-GSNO^IGSNO_SRR1582648$
-GSNO^IGSNO_SRR1582647$
-GSNO^IGSNO_SRR1582646$
-WT^Iwt_SRR1582651$
-WT^Iwt_SRR1582649$
-WT^Iwt_SRR1582650$
+GSNO^IGSNO_SRR1582648.RSEM$
+GSNO^IGSNO_SRR1582647.RSEM$
+GSNO^IGSNO_SRR1582646.RSEM$
+WT^Iwt_SRR1582651.RSEM$
+WT^Iwt_SRR1582649.RSEM$
+WT^Iwt_SRR1582650.RSEM$
 ```
 
 ```^I``` characters are tabs and ```$``` characters are newlines. Make sure that your text file looks like the example above when using ```cat -te```. If it doesn't, you'll need to edit it until it does.
@@ -65,44 +74,45 @@ Create a new job file, and select the short queue and 2GB of RAM. Load the Trini
 
 ```
 run_DE_analysis.pl \
-      --matrix Trinity_trans.counts.matrix \
+      --matrix Trinity_trans.isoform.counts.matrix \
       --samples_file samples.txt \
       --method edgeR \
       --output edgeR_trans
 ```
 
-Save the job file to your ```/pool/genomics/<username>/RNAseq_workshop``` directory and submit it to the cluster. Once it is finished, there will be a new directory called ```edgeR_trans```. Take a look at its contents:
+Save the job file to your ```/pool/genomics/<username>/RNAseq_SMSC``` directory and submit it to the cluster. Once it is finished, there will be a new directory called ```edgeR_trans```. Take a look at its contents:
 
 ```
 $ ls -lh edgeR_trans
 ```
 
-There should be three files in the directory:
+There should be four files in the directory:
 
 ```
--rw-rw-r-- 1 frandsenp frandsenp  27K Jun  7 07:53 Trinity_trans.counts.matrix.GSNO_vs_WT.edgeR.DE_results
--rw-rw-r-- 1 frandsenp frandsenp  12K Jun  7 07:53 Trinity_trans.counts.matrix.GSNO_vs_WT.edgeR.DE_results.MA_n_Volcano.pdf
--rw-rw-r-- 1 frandsenp frandsenp 1020 Jun  7 07:53 Trinity_trans.counts.matrix.GSNO_vs_WT.GSNO.vs.WT.EdgeR.Rscript
+-rw-rw-r-- 1 gonzalezv gonzalezv  21K Oct 17 01:28 Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.edgeR.count_matrix
+-rw-rw-r-- 1 gonzalezv gonzalezv  61K Oct 17 01:28 Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.edgeR.DE_results
+-rw-rw-r-- 1 gonzalezv gonzalezv  13K Oct 17 01:28 Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.edgeR.DE_results.MA_n_Volcano.pdf
+-rw-rw-r-- 1 gonzalezv gonzalezv 1.4K Oct 17 01:28 Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.GSNO.vs.WT.EdgeR.Rscript
 ```
 
-The file ```Trinity_trans.counts.matrix.GSNO_vs_WT.edgeR.DE_results``` contains the results from comparing the GSNO condition to the wt condition. Take a look:
+The file ```Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.edgeR.DE_results``` contains the results from comparing the GSNO condition to the wt condition. Take a look:
 
 ```
-$ head edgeR_trans/Trinity_trans.counts.matrix.GSNO_vs_WT.edgeR.DE_results | column -t
+$ head edgeR_trans/Trinity_trans.isoform.counts.matrix.GSNO_vs_WT.edgeR.DE_results | column -t
 ```
 
 
 ```
-logFC                   logCPM             PValue            FDR
-TRINITY_DN283_c0_g1_i1  8.86394339657974   14.1351668438638  4.32887819405242e-47  1.29433458002167e-44
-TRINITY_DN587_c0_g1_i1  5.74036873153572   14.5017490646562  5.65375941609977e-40  8.45237032706915e-38
-TRINITY_DN545_c0_g1_i1  2.48516846245412   15.0533519786141  1.32755252392501e-29  1.32312734884526e-27
-TRINITY_DN41_c0_g1_i1   5.0406890184565    13.8558652639267  2.40875725742197e-26  1.80054604992293e-24
-TRINITY_DN568_c0_g1_i1  -5.11456747445237  13.7656734840196  1.0513434360315e-25   6.28703374746839e-24
-TRINITY_DN8_c0_g1_i1    6.05737236243611   13.2471666144585  2.0676204325293e-24   1.03036418221044e-22
-TRINITY_DN300_c0_g1_i1  2.45950024584126   15.1423904751683  3.48392323833275e-24  1.48813292608785e-22
-TRINITY_DN442_c0_g1_i1  -3.19677994792633  14.0243706003162  1.91541341804279e-21  7.15885764993493e-20
-TRINITY_DN181_c0_g1_i1  5.20988783333878   13.2037202161663  3.01350479084321e-21  1.00115325829124e-19
+sampleA              sampleB logFC  logCPM             PValue            FDR
+TRINITY_DN587_c0_g1  GSNO    WT     -5.91504637307699  13.4818421437055  5.78409571193267e-55  3.74809402133237e-52
+TRINITY_DN283_c0_g1  GSNO    WT     -8.96426024608977  13.1156162622867  1.55356586112296e-53  5.03355339003839e-51
+TRINITY_DN586_c0_g1  GSNO    WT     -4.85424799859937  13.20852422536    8.59574378939845e-51  1.85668065851007e-48
+TRINITY_DN300_c0_g1  GSNO    WT     -2.65263866887907  14.1251864925867  3.86504266443156e-50  6.26136911637913e-48
+TRINITY_DN545_c0_g1  GSNO    WT     -2.66907551183065  14.0393039359086  1.33959062965647e-47  1.73610945603479e-45
+TRINITY_DN425_c0_g1  GSNO    WT     -8.94862298901304  13.1002798609347  2.14783943672528e-47  2.3196665916633e-45
+TRINITY_DN151_c0_g1  GSNO    WT     -5.63202406802949  12.8612509729179  2.93794317454296e-44  2.7196959672912e-42
+TRINITY_DN283_c1_g1  GSNO    WT     -6.92986764039549  12.8711053889033  5.05433879863526e-34  4.09401442689456e-32
+TRINITY_DN41_c0_g1   GSNO    WT     -5.22098506442703  12.8317674611305
 ```
 
 As you can see, ```edgeR``` calculates log fold change (```logFC```), the log counts per million (```logCPM```), the p-value from the exact test (```PValue```), and the false discovery rate (```FDR```). 
@@ -118,7 +128,7 @@ $ cd ~/Downloads
 Now download the plot:
 
 ```
-$ scp <username>@hydra-login01.si.edu:/pool/genomics/<username>/RNAseq_workshop/edgeR_trans/*.pdf .
+$ scp <username>@hydra-login01.si.edu:/pool/genomics/<username>/RNAseq_SMSC/edgeR_trans/*.pdf .
 ```
 
 Go ahead and open it to examine its contents.
@@ -137,11 +147,11 @@ $ cd edgeR_trans
 
 Now we will extract any transcript that is 4-fold differentially expressed between the two conditions at a significance of ```<= 0.001```.
 
-Make another job file and choose the short queue and reserve the default RAM (1GB). Load the ```bioinformatics/trinity/2.1.1``` module. Your command will be:
+Make another job file and choose the short queue and reserve the default RAM (1GB). Load the ```bioinformatics/trinity/2.6.6``` module. Your command will be:
 
 ```
 analyze_diff_expr.pl \
-      --matrix ../Trinity_trans.TMM.EXPR.matrix \
+      --matrix ../Trinity_trans.isoform.counts.matrix \
       --samples ../samples.txt \
       -P 1e-3 -C 2 
 ```
@@ -168,7 +178,7 @@ You can use the heatmap to compare the two conditions. The left columns with the
 
 ####View transcript clusters
 
-You can also cut the dendrogram to view transcript clusters that share similar expression profiles. To do this, run the following command into a job file. Be sure to load the ```bioinformatics/trinity/2.1.1``` module and choose a serial job with 1GB of RAM:
+You can also cut the dendrogram to view transcript clusters that share similar expression profiles. To do this, run the following command into a job file. Be sure to load the ```bioinformatics/trinity/2.6.6``` module and choose a serial job with 1GB of RAM:
 
 ```
 define_clusters_by_cutting_tree.pl --Ptree 60 -R diffExpr.P1e-3_C2.matrix.RData
@@ -184,7 +194,7 @@ Now we will run differential expression analysis on the gene level. This will be
 
 ```
 run_DE_analysis.pl \
-      --matrix Trinity_genes.counts.matrix \
+      --matrix Trinity_trans.genes.counts.matrix\
       --samples_file samples.txt \
       --method edgeR \
       --output edgeR_gene

@@ -17,12 +17,12 @@ $ grep -c '>' trinity_out_dir.Trinity.fasta
 
 Now we will generate stats about the transcripts. you can do this with the ```TrinityStats.pl``` script. This will be a very short job.
 
-Again open [QSubGen](https://hydra-3.si.edu/tools/QSubGen)
+Again open [QSubGen](https://hydra-4.si.edu/tools/QSubGen)
 
 - Choose ```short``` for ```CPU time```.
 - Leave ```Memory``` at 1GB.
 - Leave ```serial``` and ```sh``` selected.
-- Begin typing ```trinity``` into the module field and select ```bioinformatics/trinity/2.1.1```
+- Begin typing ```trinity``` into the module field and select ```bioinformatics/trinity/2.6.6```
 - Fill in ```Job specific commands``` with:
 ```
 TrinityStats.pl trinity_out_dir.Trinity.fasta
@@ -36,51 +36,58 @@ TrinityStats.pl trinity_out_dir.Trinity.fasta
 The N50 stats may not be the most useful for transcriptome analyses. They are dependent on both the length of the transcripts and can be influenced by the amount of expression of those particular genes. After we do transcript counting, we will generate ExN50 stats, which can be more informative. Aside from quick statistics like N50, we can generate more useful information about the quality of the transcriptome. We will try two of these methods next.
 
 ####Generate "more useful" stats
+>Following the command examples from the Trinity website [here](https://github.com/trinityrnaseq/trinityrnaseq/wiki/RNA-Seq-Read-Representation-by-Trinity-Assembly)
 
 ####Representation of reads
 
-During this step, we will map some of the reads that we used in the assembler back to the transcriptome assembly. By evaluating how well paired end reads map back to the assembly, we can get a rough estimate of how well our assembly worked. To do this step, we will use the ```bowtie_PE_separate_then_join.pl``` script that is included in Trinity.
+During this step, we will map some of the reads that we used in the assembler back to the transcriptome assembly. By evaluating how well paired end reads map back to the assembly, we can get a rough estimate of how well our assembly worked. To do this step, we will use the mapper ```bowtie2``` that is loaded with the Trinity module.
 
-Let's open the familiar QSubGen. This time, you will fill it out yourself. Leave memory at the default and choose 10 CPU threads and load the ```bioinformatics/trinity/2.1.1	``` module.
+Let's open the familiar QSubGen. This time, you will fill it out yourself. Leave memory at the default and choose 10 CPU threads and load the ```bioinformatics/trinity/2.6.6	``` module.
 
-The command will be:
-```
-bowtie_PE_separate_then_join.pl \
-      --target trinity_out_dir.Trinity.fasta \
-      --seqType fq \
-      --left data/wt_SRR1582651_1.fastq \
-      --right data/wt_SRR1582651_2.fastq \
-      --aligner bowtie -- -p $NSLOTS --all --best --strata -m 300
-```
-Save the job file as ```trinity_bowtie.job```, then submit it.
-
-Since it uses the bowtie read aligner, it will write most of the output to the ```bowtie_output``` directory. You can look at the files generated with
+First, build a bowtie2 index for the transcriptome:
 
 ```
-$ ls -lh bowtie_out
+bowtie2-build trinity_out_dir.Trinity.fasta RNA_eye_assembly
 ```
-One of the output files will be a .bam file with the reads mapped. We will evaluate how well the reads mapped to the assembly with the script ```SAM_nameSorted_to_uniq_count_stats.pl```.
+Save the job file as ```bowtie2_build.job```, then submit it.
 
-Create another job file using QSubGen. This time, we will load the Trinity module, and use the command:
+This will create an index for your transcriptome that bowtie2 will you to run the read mapping in the subsequent step. 
 
-```
-SAM_nameSorted_to_uniq_count_stats.pl bowtie_out/bowtie_out.nameSorted.bam
-```
-
-Copy and paste the script and submit the job. Look at the log file. It should look something like this:
+Second, to perform the alignment paired-end reads to capture the read alignment statistics we will run: 
 
 ```
-#read_type	count	pct
-improper_pairs	3544	50.31
-proper_pairs	2586	36.71
-right_only	527	7.48
-left_only	387	5.49
+bowtie2 --threads $NSLOTS -q --no-unal -k 20 \
+-x RNA_eye_assembly -1 data/RNA_Eye_1.fastq \
+-2 data/RNA_Eye_2.fastq | samtools view -@10 -Sb -o bowtie2.bam
+```
+This command is using bowtie2 to run the alignment, which is in bam format. We then use samtools to assess the alignment. 
 
-Total aligned reads: 7044
+Save the job file as ```bowtie2.job```, then submit it.
 
+> Hint: both of these commands can be combinded in a single job file.
+
+Let's examine the statistics for our assembly, which are written in the last lines of our log file:
+
+> Hint use `cat` or `tail` to read the last 15 or so lines of the log file. 
+
+```10000 reads; of these:
+  10000 (100.00%) were paired; of these:
+    9093 (90.93%) aligned concordantly 0 times
+    892 (8.92%) aligned concordantly exactly 1 time
+    15 (0.15%) aligned concordantly >1 times
+    ----
+    9093 pairs aligned concordantly 0 times; of these:
+      342 (3.76%) aligned discordantly 1 time
+    ----
+    8751 pairs aligned 0 times concordantly or discordantly; of these:
+      17502 mates make up the pairs; of these:
+        17379 (99.30%) aligned 0 times
+        101 (0.58%) aligned exactly 1 time
+        22 (0.13%) aligned >1 times
+13.11% overall alignment rate
 ```
 
-As you can see here, only 36.7% of the reads aligned properly to the assembled the transcriptome. 50% of the reads were 'improperly aligned'. This means that each end of the paired end reads ended up on different contigs. This is an indication that the assembly is quite fragemented. In this case, this is because we used a subsample of the original data or this workshop. If we were to use the whole data set, these statistics would likely be much higher. A normal Trinity assembly will have > 70% of the reads properly mapped to the assembly. If your number is below this threshold, it is possible that you should sequence at a greater depth of coverage.
+As you can see here, only 13.11% of the reads aligned properly to the assembled the transcriptome. 3.76% of the reads were 'aligned discordantly' (improper pairs). This means that each end of the paired end reads ended up on different contigs. This is an indication that the assembly is quite low quality and/or fragemented. In this case, this is because we used a subsample of the original data in this course. If we were to use the whole data set, these statistics would likely be much higher. A normal Trinity assembly will have > 70% of the reads properly mapped (proper pairs: yielding concordant alignments 1 or more times to the reconstructed transcriptome) to the assembly. If your number is below this threshold, it is possible that you should sequence at a greater depth of coverage.
 
 ####Assess number of full-length coding transcripts
 
@@ -93,7 +100,8 @@ In the command field enter:
 ```
 blastx -query trinity_out_dir.Trinity.fasta \
          -db data/mini_sprot.pep -out blastx.outfmt6 \
-         -evalue 1e-20 -num_threads $NSLOTS -max_target_seqs 1 -outfmt 6
+         -evalue 1e-20 -num_threads $NSLOTS \
+         -max_target_seqs 1 -outfmt 6
 ```
 
 Copy this to a job file called ```trinity_blastx.job``` and submit it.
@@ -111,16 +119,16 @@ The output will look something like this:
 
 ```
 #hit_pct_cov_bin  count_in_bin  >bin_below
-100               79            79
-90                17            96
-80                11            107
-70                18            125
-60                16            141
-50                22            163
-40                36            199
-30                42            241
-20                64            305
-10                24            329
+100               2             2
+90                0             2
+80                1             3
+70                1             4
+60                3             7
+50                3             10
+40                0             10
+30                3             13
+20                5             18
+10                1             19
 ```
 
-This tells us that 79 transcripts had were between 90 and 100% length, 17 were between 80 and 90%, etc. The far right column is a cumulative number, e.g. 125 transcripts contain >70% of the protein sequence length.
+This tells us that 2 transcripts had were between 90 and 100% length, 0 were between 80 and 90%, etc. The far right column is a cumulative number, e.g. only 4 transcripts contain >70% of the protein sequence length. Again, this is likely because we used a very small subsample of the original data in this course. 

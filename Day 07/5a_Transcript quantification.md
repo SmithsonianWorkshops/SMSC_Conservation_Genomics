@@ -1,51 +1,50 @@
 ## Transcript quantification
 
-We will be using RSEM to quantify the expression levels of the transcripts that were assembled by Trinity.
+We will be using RSEM to quantify the expression levels of the transcripts that have been assembled by Trinity. But because we do not have proper biological replicates for the Red Sisken RNAseq data, we will be using _Candida_ _glabrata_ transcriptome data. The paper from which these data are derived examined *C. glabrata* in two conditions, nutrient rich (wt) and under nitrosative stress (GNSO).
 
-Make sure that you are in your ```/pool/genomics/<username>/RNAseq_workshop``` directory.
+Make sure that you are in your ```/pool/genomics/<username>/RNAseq_SMSC/``` directory.
 
 To use RSEM, we will use the wrapper script included in the Trinity package called ```align_and_estimate_abundance.pl```.
 
 This script makes it very easy to take Trinity output and run RSEM.
 
-Create another job file with QSubGen. This will be a serial job and you should reserve 4GB of memory. It will also run fine in the short queue.
+Create another job file with [QSubGen](https://hydra-4.si.edu/tools/QSubGen/). This will be a serial job and you should reserve 4GB of memory. It will also run fine in the short queue.
 
 Load the trinity module and enter the following program command:
 
 ```
 align_and_estimate_abundance.pl --seqType fq \
-         --left data/GSNO_SRR1582648_1.fastq \
-         --right data/GSNO_SRR1582648_2.fastq  \
-         --transcripts trinity_out_dir.Trinity.fasta  \
-         --output_prefix GSNO_SRR1582648 \
+         --left data/diff_ex/GSNO_SRR1582648_1.fastq \
+         --right data/diff_ex/GSNO_SRR1582648_2.fastq  \
+         --transcripts data/diff_ex/trinity_out_dir.Trinity.fasta  \
          --est_method RSEM  --aln_method bowtie \
          --trinity_mode --prep_reference --coordsort_bam \
          --output_dir GSNO_SRR1582648.RSEM
 ```
 
-Save the script into a file called ```trinity_rsem_GNSO_SRR1582648.job```. Since there are six biological replicates, we'll need to make six of these files--one for each replicate.
+Save the script into a file called ```trinity_rsem_GNSO_SRR1582648.job```. Since there are six biological replicates, we'll need to make six of these files -- one for each replicate.
 
-Take some time to create the five other files for the other treatments. Be sure to change both the names of the reads, the ```--output_prefix```, and the ```--output_dir``` according to the sample name. Double check that you are calling both the correct reads and using the correct names. It is always important to check twice, run once.
+Take some time to create the five other files for the other treatments. Be sure to change both the names of the reads, and the ```--output_dir``` according to the sample name. Double check that you are calling both the correct reads and using the correct names. It is always important to check twice, run once.
 
 Now you can submit each of these jobs using ```qsub job_file_name```. This is the magic of parallel computing clusters--you can run many jobs at once.
 
 These jobs should run pretty fast. Once they are finished, you can check the output with, e.g.:
 
-```$ head GSNO_SRR1582648.RSEM/GSNO_SRR1582648.genes.results | column -t```
+```$ head GSNO_SRR1582648.RSEM/RSEM.genes.results | column -t```
 
 Your output should look something like:
 
 ```
-gene_id              transcript_id(s)        length  effective_length  expected_count  TPM      FPKM
-TRINITY_DN100_c0_g1  TRINITY_DN100_c0_g1_i1  253.00  238.93            0.00            0.00     0.00
-TRINITY_DN103_c0_g1  TRINITY_DN103_c0_g1_i1  524.00  509.93            0.00            0.00     0.00
-TRINITY_DN103_c1_g1  TRINITY_DN103_c1_g1_i1  152.00  138.05            0.00            0.00     0.00
-TRINITY_DN104_c0_g1  TRINITY_DN104_c0_g1_i1  174.00  160.01            0.00            0.00     0.00
-TRINITY_DN105_c0_g1  TRINITY_DN105_c0_g1_i1  221.00  206.95            0.00            0.00     0.00
-TRINITY_DN105_c1_g1  TRINITY_DN105_c1_g1_i1  238.00  223.93            1.00            1139.60  2872.63
-TRINITY_DN107_c0_g1  TRINITY_DN107_c0_g1_i1  161.00  147.03            0.00            0.00     0.00
-TRINITY_DN108_c0_g1  TRINITY_DN108_c0_g1_i1  190.00  175.99            0.00            0.00     0.00
-TRINITY_DN108_c1_g1  TRINITY_DN108_c1_g1_i1  195.00  180.98            0.00            0.00     0.00
+gene_id				transcript_id(s)		length	effective_length	expected_count	TPM		FPKM
+TRINITY_DN100_c0_g1	TRINITY_DN100_c0_g1_i1	253.00	123.83				2.00			1014.01	4866.18
+TRINITY_DN103_c0_g1	TRINITY_DN103_c0_g1_i1	524.00	394.48				57.00			9071.81	43534.98
+TRINITY_DN103_c1_g1	TRINITY_DN103_c1_g1_i1	152.00	27.95				3.00			6739.18	32340.83
+TRINITY_DN104_c0_g1	TRINITY_DN104_c0_g1_i1	174.00	47.05				0.00			0.00	0.00
+TRINITY_DN105_c0_g1	TRINITY_DN105_c0_g1_i1	221.00	92.16				0.00			0.00	0.00
+TRINITY_DN105_c1_g1	TRINITY_DN105_c1_g1_i1	238.00	108.94				1.00			576.30	2765.60
+TRINITY_DN107_c0_g1	TRINITY_DN107_c0_g1_i1	161.00	35.48				1.00			1769.44	8491.42
+TRINITY_DN108_c0_g1	TRINITY_DN108_c0_g1_i1	190.00	62.01				0.00			0.00	0.00
+TRINITY_DN108_c1_g1	TRINITY_DN108_c1_g1_i1	195.00	66.79				1.00			940.01	4511.05
 ```
 
 ####Generate a transcript counts matrix and perform cross-sample normalization
@@ -56,21 +55,27 @@ Go ahead and generate a job file using the QSubGen. Assuming that you set up the
 
 ```
 abundance_estimates_to_matrix.pl --est_method RSEM \
-      --out_prefix Trinity_trans \
-      GSNO_SRR1582648.RSEM/GSNO_SRR1582648.isoforms.results \
-      GSNO_SRR1582646.RSEM/GSNO_SRR1582646.isoforms.results \
-      GSNO_SRR1582647.RSEM/GSNO_SRR1582647.isoforms.results \
-      wt_SRR1582649.RSEM/wt_SRR1582649.isoforms.results \
-      wt_SRR1582651.RSEM/wt_SRR1582651.isoforms.results \
-      wt_SRR1582650.RSEM/wt_SRR1582650.isoforms.results
+	  --gene_trans_map data/diff_ex/trinity_out_dir.Trinity.fasta.gene_trans_map \
+      --out_prefix Trinity_trans --name_sample_by_basedir \
+      GSNO_SRR1582648.RSEM/RSEM.isoforms.results \
+      GSNO_SRR1582646.RSEM/RSEM.isoforms.results \
+      GSNO_SRR1582647.RSEM/RSEM.isoforms.results \
+      wt_SRR1582649.RSEM/RSEM.isoforms.results \
+      wt_SRR1582651.RSEM/RSEM.isoforms.results \
+      wt_SRR1582650.RSEM/RSEM.isoforms.results
 ```
 
 Choose a serial key and 2GB of memory. Either save the job file and transfer it to Hydra, or copy and paste the text into your terminal window with ```nano```. Subit the job.
 
-A file called ```Trinity_trans.counts.matrix``` should be written as a result. Let's look at the first 20 lines:
+This command will run estimates for both genes and isoforms. The output of this command will produce:
 
+- RSEM.isoform.counts.matrix  : the estimated RNA-Seq fragment counts (raw counts)
+- RSEM.isoform.TPM.not\_cross\_norm  : a matrix of TPM expression values (not cross-sample normalized)
+- RSEM.isoform.TMM.EXPR.matrix : a matrix of TMM-normalized expression values
+   
+First lets look at the at the first 20 lines of the isoform counts. 
 ```
-$ head -20 Trinity_trans.counts.matrix | column -t
+$ head -20 Trinity_trans.isoform.counts.matrix | column -t
 ```
 
 The resulting output will look someting like this:
@@ -99,10 +104,10 @@ TRINITY_DN97_c0_g1_i1   0.00             0.00             0.00           0.00   
 
 ```
 
-Now look at the output generated from the TMM normalized counts:
+Now look at the output generated for the isoforms from the TMM normalized counts:
 
 ```
-$ head -20 Trinity_trans.TMM.EXPR.matrix | column -t
+$ head -20 Trinity_trans.isoform.TMM.EXPR.matrix | column -t
 ```
 
 The output from this file will look a bit different. As described in the paper linked to above, this normalization method assumes that most transcripts are not differentially expressed and linearly scales the values with that assumption in mind.
@@ -131,23 +136,23 @@ TRINITY_DN97_c0_g1_i1   0.000            0.000            0.000          0.000  
 
 ```
 
-Now we will generate the matrices for genes. Create another job file, but this time, the command will include the gene results from RSEM:
+We can also examine the generated matrices for genes. 
 
 ```
-abundance_estimates_to_matrix.pl --est_method RSEM \
-      --out_prefix Trinity_genes \
-      GSNO_SRR1582648.RSEM/GSNO_SRR1582648.genes.results \
-      GSNO_SRR1582646.RSEM/GSNO_SRR1582646.genes.results \
-      GSNO_SRR1582647.RSEM/GSNO_SRR1582647.genes.results \
-      wt_SRR1582649.RSEM/wt_SRR1582649.genes.results \
-      wt_SRR1582651.RSEM/wt_SRR1582651.genes.results \
-      wt_SRR1582650.RSEM/wt_SRR1582650.genes.results
+$ head -20 Trinity_trans.gene.counts.matrix | column -tt
 ```
+```
+$ head -20 Trinity_trans.gene.TMM.EXPR.matrix | column -t
+```
+
+
 Now that we have expression values we can estimate some new statistics. We will use the expression quantification values to calculate the ExN50, which is restricted to only the most highly expressed transcripts. This is more informative of the quality of the assembly since it only uses the transcripts that have suitable coverage.
 
-The file that you generate from QSubGen should choose the short queue and the default RAM. Load the ```bioinformatics/trinity/2.1.1``` module. The command that you should use is:
+The file that you generate from QSubGen should choose the short queue and the default RAM. Load the ```bioinformatics/trinity/2.6.6``` module. The command that you should use is:
+
 ```
-contig_ExN50_statistic.pl Trinity_trans.TMM.EXPR.matrix trinity_out_dir.Trinity.fasta > ExN50.stats
+contig_ExN50_statistic.pl data/diff_ex/Trinity_trans.TMM.EXPR.matrix \
+data/diff_ex/trinity_out_dir.Trinity.fasta > ExN50.stats
 ```
 
 When your job is completed, you will see a new output file called, ```ExN50.stats```. Go ahead and take a look at your new file with:

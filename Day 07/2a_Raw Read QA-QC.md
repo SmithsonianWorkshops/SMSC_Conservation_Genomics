@@ -58,3 +58,7 @@ _Note: We will not be doing this step for this particular workshop because the d
 	+ **module**: ```bioinformatics/trimgalore/0.4.0```
 	+ You can then run FastQC again to see if anything has changed.
 
+```
+Results of all tutorials can be found here:
+/data/genomics/workshops/smsc/RNA_Seq/SMSC_results.tar.gz
+```

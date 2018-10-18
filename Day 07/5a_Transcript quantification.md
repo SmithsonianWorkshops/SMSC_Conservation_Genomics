@@ -10,7 +10,7 @@ This script makes it very easy to take Trinity output and run RSEM.
 
 Create another job file with [QSubGen](https://hydra-4.si.edu/tools/QSubGen/). This will be a serial job and you should reserve 4GB of memory. It will also run fine in the short queue.
 
-Load the trinity module and enter the following program command:
+Load the trinity module, rsem module, and enter the following program command:
 
 ```
 align_and_estimate_abundance.pl --seqType fq \
@@ -139,7 +139,7 @@ TRINITY_DN97_c0_g1_i1   0.000            0.000            0.000          0.000  
 We can also examine the generated matrices for genes. 
 
 ```
-$ head -20 Trinity_trans.gene.counts.matrix | column -tt
+$ head -20 Trinity_trans.gene.counts.matrix | column -t
 ```
 ```
 $ head -20 Trinity_trans.gene.TMM.EXPR.matrix | column -t
@@ -258,3 +258,9 @@ E100  0          285    690
 ```
 
 Now you can look at the N50 stats scaled by the genes with the highest expression. If, for example, you only wanted to see the N50 for the 60% highest expressed genes, it would be ~485.
+
+```
+Results of all tutorials can be found here:
+/data/genomics/workshops/smsc/RNA_Seq/SMSC_results.tar.gz
+```
+

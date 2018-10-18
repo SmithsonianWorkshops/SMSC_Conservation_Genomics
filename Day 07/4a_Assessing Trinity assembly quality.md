@@ -132,3 +132,8 @@ The output will look something like this:
 ```
 
 This tells us that 2 transcripts had were between 90 and 100% length, 0 were between 80 and 90%, etc. The far right column is a cumulative number, e.g. only 4 transcripts contain >70% of the protein sequence length. Again, this is likely because we used a very small subsample of the original data in this course. 
+
+```
+Results of all tutorials can be found here:
+/data/genomics/workshops/smsc/RNA_Seq/SMSC_results.tar.gz
+```

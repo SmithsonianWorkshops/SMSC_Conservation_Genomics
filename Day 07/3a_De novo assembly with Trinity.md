@@ -26,3 +26,8 @@ Now save your text file into your ```/pool/genomics/<username>/RNAseq_SMSC``` di
 Now submit your job with the command: ```qsub trinity.job```
 
 Soon your transcriptome assembly will be finished!
+
+```
+Results of all tutorials can be found here:
+/data/genomics/workshops/smsc/RNA_Seq/SMSC_results.tar.gz
+```

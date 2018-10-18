@@ -201,3 +201,8 @@ run_DE_analysis.pl \
 ```
 
 You can also run the other downstream analyses, but you should replace ```Trinity_trans``` with ```Trinity_genes``` in the commands.
+
+```
+Results of all tutorials can be found here:
+/data/genomics/workshops/smsc/RNA_Seq/SMSC_results.tar.gz
+```

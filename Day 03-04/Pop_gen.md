@@ -42,15 +42,18 @@
 
 ###4. Realign indels before calling variants
 * Now we'll look for regions with indels in our bam files and realign them.
+* Index the marked bam files:
+	+ **module**: ```module load bioinformatics/samtools/1.6```
+	+ **command**: ```samtools index <YOUR_SORTED_BAM_marked.bam>```
 * Create a job file to use GATK RealignerTargetCreator:
 	+ **module**: ```module load bioinformatics/gatk/3.7```
 	+ **command**: ```rungatk -T RealignerTargetCreator -R <YOUR_SCAFFOLD.fasta> -I <YOUR_SORTED_BAM_marked.bam> -o <YOUR_SORTED_BAM_marked.bam>.list```
 * Create a job file to use GATK IndelRealigner:
 	+ **module**: ```module load bioinformatics/gatk/3.7```
 	+ **command**: ```rungatk -T IndelRealigner -R <YOUR_SCAFFOLD.fasta> -I <YOUR_SORTED_BAM_marked.bam> -o indels-<YOUR_SORTED_BAM_marked.bam> -targetIntervals <YOUR_SORTED_BAM_marked.bam>.list```
-* Index the marked bam files:
+* Index the indel-marked bam files:
 	+ **module**: ```module load bioinformatics/samtools/1.6```
-	+ **command**: ```samtools index <YOUR_SORTED_BAM_marked.bam>```
+	+ **command**: ```samtools index <indels-YOUR_SORTED_BAM_marked.bam>```
 
 ###5. Call variants with GATK
 * First, we will run GATK HaplotypeCaller on each bam file individually:
